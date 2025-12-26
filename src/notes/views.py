@@ -1,13 +1,17 @@
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
+import rest_framework.permissions
 
 import notes.models
+import notes.permissions
 import notes.serializers
 
 
 class NoteViewSet(viewsets.ModelViewSet):
     serializer_class = notes.serializers.NoteSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [
+        rest_framework.permissions.IsAuthenticated,
+        notes.permissions.IsOwner,
+    ]
 
     def get_queryset(self):
         return notes.models.Note.objects.filter(owner=self.request.user)
