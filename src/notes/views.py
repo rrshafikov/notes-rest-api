@@ -13,6 +13,10 @@ class NoteViewSet(viewsets.ModelViewSet):
         notes.permissions.IsOwner,
     ]
 
+    ordering_fields = ["created_at", "title", "is_pinned"]
+    ordering = ["-created_at"]
+    search_fields = ["title", "content"]
+
     def get_queryset(self):
         return notes.models.Note.objects.filter(owner=self.request.user)
 
