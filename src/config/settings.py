@@ -28,6 +28,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_filters",
     "notes",
+    "drf_spectacular",
+
 ]
 
 MIDDLEWARE = [
@@ -129,4 +131,12 @@ REST_FRAMEWORK = {
         "rest_framework.filters.OrderingFilter",
         "rest_framework.filters.SearchFilter",
     ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Notes REST API",
+    "DESCRIPTION": "REST API for notes with JWT authentication",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
 }
