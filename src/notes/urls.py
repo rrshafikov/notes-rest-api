@@ -12,7 +12,7 @@ router.register(r"notes", notes.views.NoteViewSet, basename="note")
 
 urlpatterns = [
     # meta
-    path("health/", notes.health.health),
+    path("health/", notes.health.HealthView.as_view(), name="health"),
 
     # auth
     path(

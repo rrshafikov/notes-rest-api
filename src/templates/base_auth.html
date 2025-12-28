@@ -1,0 +1,23 @@
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}Auth{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body class="auth-body">
+  <main class="auth-shell">
+    {% block content %}{% endblock %}
+  </main>
+
+  <script src="{% static 'js/auth.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>
