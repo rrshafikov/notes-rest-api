@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-import rest_framework.permissions
+from rest_framework.permissions import IsAuthenticated
 
 import notes.models
 import notes.permissions
@@ -8,17 +8,23 @@ import notes.serializers
 
 class NoteViewSet(viewsets.ModelViewSet):
     serializer_class = notes.serializers.NoteSerializer
-    permission_classes = [
-        rest_framework.permissions.IsAuthenticated,
-        notes.permissions.IsOwner,
-    ]
+    permission_classes = [IsAuthenticated, notes.permissions.IsOwner]
+
+    queryset = notes.models.Note.objects.all()
 
     ordering_fields = ["created_at", "title", "is_pinned"]
     ordering = ["-created_at"]
     search_fields = ["title", "content"]
 
     def get_queryset(self):
-        return notes.models.Note.objects.filter(owner=self.request.user)
+        if getattr(self, "swagger_fake_view", False):
+            return notes.models.Note.objects.none()
+
+        user = self.request.user
+        if not user or not user.is_authenticated:
+            return notes.models.Note.objects.none()
+
+        return notes.models.Note.objects.filter(owner=user)
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)

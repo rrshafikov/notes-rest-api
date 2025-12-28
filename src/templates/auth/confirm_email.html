@@ -1,0 +1,35 @@
+{% extends "base_auth.html" %}
+{% block title %}CONFIRM EMAIL{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+  <div class="auth-card card">
+    <div class="auth-header">
+      <h1 class="auth-title">Confirm your email</h1>
+      <p class="auth-subtitle">Enter the 6-digit code we sent to your email</p>
+    </div>
+
+    <form class="auth-form" id="confirm-email-form" novalidate>
+      <div class="auth-errors" id="confirm-email-errors" style="display:none;"></div>
+
+      <label class="auth-label">
+        <span class="auth-label-text">Confirmation code</span>
+        <input class="auth-input" name="code" inputmode="numeric" autocomplete="one-time-code" placeholder="123456" required />
+      </label>
+
+      <button type="submit" class="auth-submit-btn">Confirm</button>
+    </form>
+
+    <div class="auth-links">
+      <div class="auth-link-row">
+        <span>Didn’t get a code?</span>
+        <a href="#" id="resend-email-code">Resend code</a>
+      </div>
+      <div class="auth-link-row">
+        <span>Back to</span>
+        <a href="/login/">Log in</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
