@@ -10,10 +10,10 @@ function hideErrors(el) {
   el.innerText = "";
 }
 
-async function apiPost(url, payload) {
+async function apiPost(url, payload, headersExtra = {}) {
   const resp = await fetch(url, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...headersExtra },
     body: JSON.stringify(payload),
   });
 
@@ -21,7 +21,6 @@ async function apiPost(url, payload) {
   try { data = await resp.json(); } catch (e) {}
 
   if (!resp.ok) {
-    // DRF validation format -> {field: [errors]}
     if (data && typeof data === "object") {
       const msgs = [];
       for (const k of Object.keys(data)) {
@@ -40,14 +39,37 @@ async function apiPost(url, payload) {
   return data;
 }
 
-function looksLikeUserAlreadyExistsError(err) {
-  const msg = (err && err.message) ? err.message.toLowerCase() : "";
-  return msg.includes("username") && (msg.includes("exists") || msg.includes("already"));
+function getPendingEmail() {
+  return (localStorage.getItem("pending_email") || "").trim();
+}
+
+function setPendingEmail(email) {
+  localStorage.setItem("pending_email", (email || "").trim());
+}
+
+function clearPendingEmail() {
+  localStorage.removeItem("pending_email");
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    const access = (localStorage.getItem("access") || "").trim();
+    if (access) {
+        fetch("/api/auth/jwt/verify/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: access }),
+        }).then((r) => {
+        if (r.ok && (window.location.pathname === "/login/" || window.location.pathname === "/signup/")) {
+            window.location.replace("/notes/");
+        }
+        });
+    }
+
   const loginForm = document.getElementById("login-form");
   const signupForm = document.getElementById("signup-form");
+  const confirmEmailForm = document.getElementById("confirm-email-form");
+  const resetReqForm = document.getElementById("reset-password-request-form");
+  const resetCodeForm = document.getElementById("reset-password-code-form");
 
   if (loginForm) {
     const errBox = document.getElementById("login-errors");
@@ -68,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const data = await apiPost("/api/auth/jwt/create/", { username, password });
         localStorage.setItem("access", data.access);
         localStorage.setItem("refresh", data.refresh);
-        window.location.href = "/api/docs/";
+        window.location.href = "/notes/";
       } catch (err) {
         showErrors(errBox, err.message || "Login failed.");
       }
@@ -85,62 +107,85 @@ document.addEventListener("DOMContentLoaded", () => {
       const username = (fd.get("username") || "").toString().trim();
       const email = (fd.get("email") || "").toString().trim();
       const password = (fd.get("password") || "").toString();
+      const passwordConfirm = (fd.get("password_confirm") || "").toString();
 
-      if (!username || !password) {
-        showErrors(errBox, "Please fill username and password.");
+      if (!username || !email || !password || !passwordConfirm) {
+        showErrors(errBox, "Please fill username, email and both password fields.");
+        return;
+      }
+
+      if (password !== passwordConfirm) {
+        showErrors(errBox, "Passwords do not match.");
         return;
       }
 
       try {
-        await apiPost("/api/auth/register/", { username, email, password });
+        await apiPost("/api/auth/register/", {
+          username,
+          email,
+          password,
+          password_confirm: passwordConfirm,
+        });
+        setPendingEmail(email);
+        window.location.href = "/confirm-email/";
       } catch (err) {
-        if (!looksLikeUserAlreadyExistsError(err)) {
-          showErrors(errBox, err.message || "Sign up failed.");
-          return;
-        }
-      }
-
-      try {
-        const data = await apiPost("/api/auth/jwt/create/", { username, password });
-        localStorage.setItem("access", data.access);
-        localStorage.setItem("refresh", data.refresh);
-        window.location.href = "/api/docs/";
-      } catch (err) {
-        showErrors(errBox, err.message || "Login failed after sign up.");
+        showErrors(errBox, err.message || "Sign up failed.");
       }
     });
   }
-});
 
-  const confirmEmailForm = document.getElementById("confirm-email-form");
   if (confirmEmailForm) {
     const errBox = document.getElementById("confirm-email-errors");
+
     confirmEmailForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       hideErrors(errBox);
 
       const fd = new FormData(confirmEmailForm);
       const code = (fd.get("code") || "").toString().trim();
+      const email = getPendingEmail();
+
+      if (!email) {
+        showErrors(errBox, "No email found. Please sign up again.");
+        return;
+      }
 
       if (!code) {
         showErrors(errBox, "Please enter the code.");
         return;
       }
 
-      // DEMO: pretend success
-      window.location.href = "/login/";
+      try {
+        await apiPost("/api/auth/email/confirm/", { email, code });
+        clearPendingEmail();
+        window.location.href = "/login/";
+      } catch (err) {
+        showErrors(errBox, err.message || "Confirmation failed.");
+      }
     });
 
     const resend = document.getElementById("resend-email-code");
     if (resend) {
-      resend.addEventListener("click", (e) => {
+      resend.addEventListener("click", async (e) => {
         e.preventDefault();
-        showErrors(errBox, "Code resent (demo).");
+        hideErrors(errBox);
+
+        const email = getPendingEmail();
+        if (!email) {
+          showErrors(errBox, "No email found. Please sign up again.");
+          return;
+        }
+
+        try {
+          await apiPost("/api/auth/email/resend/", { email, code: "000000" });
+          showErrors(errBox, "Code resent.");
+        } catch (err) {
+          showErrors(errBox, err.message || "Resend failed.");
+        }
       });
     }
   }
 
-  const resetReqForm = document.getElementById("reset-password-request-form");
   if (resetReqForm) {
     const errBox = document.getElementById("reset-request-errors");
     resetReqForm.addEventListener("submit", async (e) => {
@@ -155,12 +200,10 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // DEMO: pretend we sent code
       window.location.href = "/reset-password/code/";
     });
   }
 
-  const resetCodeForm = document.getElementById("reset-password-code-form");
   if (resetCodeForm) {
     const errBox = document.getElementById("reset-code-errors");
     resetCodeForm.addEventListener("submit", async (e) => {
@@ -176,7 +219,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // DEMO: pretend success
       window.location.href = "/login/";
     });
   }
+});

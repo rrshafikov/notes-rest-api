@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name="Note",
+            name="EmailVerificationCode",
             fields=[
                 (
                     "id",
@@ -25,26 +25,25 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("title", models.CharField(max_length=255)),
-                ("content", models.TextField(blank=True)),
-                ("is_pinned", models.BooleanField(default=False)),
+                ("email", models.EmailField(max_length=254)),
+                ("code", models.CharField(max_length=6)),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
-                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("expires_at", models.DateTimeField()),
+                ("is_used", models.BooleanField(default=False)),
                 (
-                    "owner",
+                    "user",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="notes",
+                        related_name="email_verification_codes",
                         to=settings.AUTH_USER_MODEL,
                     ),
                 ),
             ],
             options={
-                "ordering": ["-created_at"],
                 "indexes": [
                     models.Index(
-                        fields=["owner", "created_at"],
-                        name="notes_note_owner_i_3ca543_idx",
+                        fields=["user", "email", "code", "expires_at", "is_used"],
+                        name="authorizati_user_id_1ebcba_idx",
                     )
                 ],
             },
