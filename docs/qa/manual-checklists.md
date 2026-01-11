@@ -1,7 +1,7 @@
 # Manual Testing Checklists (NRA-25)
 
-**Project:** Notes REST API  
-**Type:** Manual QA  
+**Project:** Notes REST API
+**Type:** Manual QA
 **Author:** Georgiy Gorin (QA Engineer)
 
 ### 1) Health endpoint

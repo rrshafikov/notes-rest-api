@@ -1,10 +1,31 @@
+import os
 from pathlib import Path
+
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "django-insecure-i^hgoztptbjcf!^7#$@_v%35p=6vdt2=i7=5*dd$q9-9%q%p*l"
-DEBUG = True
-ALLOWED_HOSTS = []
+load_dotenv(BASE_DIR.parent / ".env")
+
+
+def env_bool(name: str, default: bool) -> bool:
+    raw = os.getenv(name)
+    if raw is None:
+        return default
+    return raw.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def env_list(name: str, default: list[str]) -> list[str]:
+    raw = os.getenv(name)
+    if raw is None:
+        return default
+    items = [x.strip() for x in raw.split(",")]
+    return [x for x in items if x]
+
+
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-change-me")
+DEBUG = env_bool("DJANGO_DEBUG", True)
+ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS", [])
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -13,11 +34,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
     "rest_framework",
     "django_filters",
     "drf_spectacular",
-
     "notes",
     "authorization",
     "api",
@@ -61,14 +80,17 @@ DATABASES = {
 }
 
 AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+    },
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-LANGUAGE_CODE = "en-us"
-TIME_ZONE = "UTC"
+LANGUAGE_CODE = os.getenv("DJANGO_LANGUAGE_CODE", "en-us")
+TIME_ZONE = os.getenv("DJANGO_TIME_ZONE", "UTC")
+
 USE_I18N = True
 USE_TZ = True
 
