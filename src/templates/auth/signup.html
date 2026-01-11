@@ -2,47 +2,88 @@
 {% block title %}SIGN UP{% endblock %}
 
 {% block content %}
-<div class="auth-page">
-  <div class="auth-card card">
-    <div class="auth-header">
-      <h1 class="auth-title">Create account</h1>
-      <p class="auth-subtitle">Sign up to start using notes</p>
+    <div class="auth-page">
+        <div class="auth-card card">
+            <div class="auth-header">
+                <h1 class="auth-title">Create account</h1>
+                <p class="auth-subtitle">Sign up to start using notes</p>
+            </div>
+
+            <form
+                class="auth-form"
+                id="signup-form"
+                method="post"
+                action="{% url 'authorization:signup' %}"
+                novalidate
+            >
+                {% csrf_token %}
+
+                <div
+                    class="auth-errors"
+                    id="signup-errors"
+                    {% if error %}
+                        style="display:block;"
+                    {% else %}
+                        style="display:none;"
+                    {% endif %}
+                >
+                    {{ error }}
+                </div>
+
+                <label class="auth-label">
+                    <span class="auth-label-text">Username</span>
+                    <input
+                        class="auth-input"
+                        name="username"
+                        autocomplete="username"
+                        required
+                    />
+                </label>
+
+                <label class="auth-label">
+                    <span class="auth-label-text">Email</span>
+                    <input
+                        class="auth-input"
+                        type="email"
+                        name="email"
+                        autocomplete="email"
+                        required
+                    />
+                </label>
+
+                <label class="auth-label">
+                    <span class="auth-label-text">Password</span>
+                    <input
+                        class="auth-input"
+                        type="password"
+                        name="password"
+                        autocomplete="new-password"
+                        required
+                    />
+                </label>
+
+                <label class="auth-label">
+                    <span class="auth-label-text">Repeat password</span>
+                    <input
+                        class="auth-input"
+                        type="password"
+                        name="password_confirm"
+                        autocomplete="new-password"
+                        required
+                    />
+                </label>
+
+                <button type="submit" class="auth-submit-btn">
+                    Sign up
+                </button>
+            </form>
+
+            <div class="auth-links">
+                <div class="auth-link-row">
+                    <span>Already have an account?</span>
+                    <a href="/login/">Log in</a>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <form class="auth-form" id="signup-form" method="post" action="{% url 'authorization:signup' %}" novalidate>
-      {% csrf_token %}
-
-      <div class="auth-errors" id="signup-errors" {% if error %}style="display:block;"{% else %}style="display:none;"{% endif %}>{{ error }}</div>
-
-      <label class="auth-label">
-        <span class="auth-label-text">Username</span>
-        <input class="auth-input" name="username" autocomplete="username" required />
-      </label>
-
-      <label class="auth-label">
-        <span class="auth-label-text">Email</span>
-        <input class="auth-input" type="email" name="email" autocomplete="email" required />
-      </label>
-
-      <label class="auth-label">
-        <span class="auth-label-text">Password</span>
-        <input class="auth-input" type="password" name="password" autocomplete="new-password" required />
-      </label>
-
-      <label class="auth-label">
-        <span class="auth-label-text">Repeat password</span>
-        <input class="auth-input" type="password" name="password_confirm" autocomplete="new-password" required />
-      </label>
-
-      <button type="submit" class="auth-submit-btn">Sign up</button>
-    </form>
-
-    <div class="auth-links">
-      <div class="auth-link-row">
-        <span>Already have an account?</span>
-        <a href="/login/">Log in</a>
-      </div>
-    </div>
-  </div>
-</div>
 {% endblock %}

@@ -1,0 +1,44 @@
+.snackbar {
+    position: fixed;
+    bottom: 22px;
+    left: 0;
+    right: auto;
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, 10px);
+
+    max-width: min(560px, calc(100vw - 24px));
+    pointer-events: none;
+
+    background: rgba(0, 0, 0, 0.90);
+    color: var(--ui-toolbar-fg);
+
+    padding: 14px 22px;
+    border-radius: var(--radius);
+
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+
+    backdrop-filter: var(--snackbar-blur);
+    -webkit-backdrop-filter: var(--snackbar-blur);
+
+    transition: opacity 180ms ease, transform 180ms ease, visibility 180ms ease;
+    z-index: 2000;
+}
+
+.snackbar.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+}
+
+@media (max-width: 860px) {
+    .snackbar {
+        bottom: 16px;
+        max-width: calc(100vw - 24px);
+        text-align: center;
+    }
+}

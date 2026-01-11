@@ -1,0 +1,152 @@
+.ck.ck-toolbar {
+    background: var(--ui-toolbar-bg) !important;
+    border-radius: var(--radius) !important;
+    border: 1px solid var(--ui-border) !important;
+    color: var(--ui-toolbar-fg) !important;
+}
+
+.ck.ck-toolbar * {
+    color: var(--ui-toolbar-fg) !important;
+}
+
+.ck.ck-toolbar .ck-icon {
+    color: var(--ui-toolbar-fg) !important;
+}
+
+.ck.ck-toolbar .ck-icon svg,
+.ck.ck-toolbar .ck-icon svg * {
+    fill: currentColor !important;
+    stroke: currentColor !important;
+}
+
+.ck.ck-toolbar .ck-button,
+.ck.ck-toolbar .ck-dropdown__button,
+.ck.ck-toolbar .ck-splitbutton__action,
+.ck.ck-toolbar .ck-splitbutton__arrow {
+    border-radius: var(--radius) !important;
+    background: var(--ui-toolbar-btn-bg) !important;
+}
+
+.ck.ck-toolbar .ck-button:hover,
+.ck.ck-toolbar .ck-dropdown__button:hover,
+.ck.ck-toolbar .ck-splitbutton__action:hover,
+.ck.ck-toolbar .ck-splitbutton__arrow:hover,
+.ck.ck-toolbar .ck-button.ck-on,
+.ck.ck-toolbar .ck-dropdown__button.ck-on,
+.ck.ck-toolbar .ck-splitbutton__action.ck-on,
+.ck.ck-toolbar .ck-splitbutton__arrow.ck-on {
+    background: var(--ui-toolbar-btn-hover) !important;
+}
+
+.ck.ck-toolbar .ck-button:focus,
+.ck.ck-toolbar .ck-button:focus-visible,
+.ck.ck-toolbar .ck-dropdown__button:focus,
+.ck.ck-toolbar .ck-dropdown__button:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.ck-floating-toolbar {
+    position: fixed !important;
+    bottom: var(--toolbar-gap);
+    z-index: 1000;
+
+    pointer-events: none;
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(6px);
+    transition: opacity 160ms ease, transform 160ms ease, visibility 160ms ease;
+}
+
+.ck-floating-toolbar.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.ck-floating-toolbar-inner {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.ck-floating-toolbar .ck.ck-toolbar {
+    pointer-events: auto;
+    white-space: nowrap;
+    overflow: visible !important;
+}
+
+.ck-floating-toolbar .ck-toolbar__items {
+    flex-wrap: nowrap !important;
+}
+
+.ck-floating-toolbar .ck-dropdown__panel {
+    max-height: min(60vh, 420px);
+    overflow: auto;
+    border-radius: var(--radius) !important;
+    border: 1px solid var(--ui-border) !important;
+}
+
+.ck.ck-dropdown__panel,
+.ck.ck-dropdown__panel .ck-list {
+    border-radius: var(--radius) !important;
+    background: var(--ui-toolbar-btn-bg) !important;
+}
+
+.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-dropdown__button {
+    min-width: 20px !important;
+}
+
+.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-dropdown__button .ck-button__label {
+    display: none !important;
+}
+
+.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-dropdown__button::before {
+    content: "H";
+    font-weight: 800;
+    line-height: 1;
+}
+
+.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-dropdown__button .ck-dropdown__arrow {
+    margin-left: 5px !important;
+}
+
+.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-dropdown__panel,
+.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-list {
+    width: max-content !important;
+    min-width: 0 !important;
+}
+
+.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-list__item .ck-button__label,
+.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-list__item .ck-heading_heading1,
+.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-list__item .ck-heading_heading2,
+.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-list__item .ck-heading_heading3,
+.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-list__item .ck-heading_paragraph {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    line-height: 1.2 !important;
+    margin: 0 !important;
+}
+
+.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-list__item .ck-button {
+    padding: 8px 10px !important;
+}
+
+.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-button.ck-on,
+.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-list__item .ck-button.ck-on {
+    background: var(--ui-toolbar-btn-bg) !important;
+    color: var(--ui-toolbar-fg) !important;
+    border: none !important;
+}
+
+.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-list__item .ck-button:hover {
+    background: var(--ui-toolbar-btn-hover) !important;
+}
+
+.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-button:focus,
+.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-button:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+}

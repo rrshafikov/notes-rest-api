@@ -7,19 +7,34 @@
 
     --editor-bottom-safe: 120px;
 
-    --ui-toolbar-bg: black;
-    --ui-highlight: #F3F5F7;
-    --ui-toolbar-hover: #CECFCF;
+    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
+    --ui-text: #111;
+    --ui-bg: #fff;
+
+    --ui-toolbar-bg: #000;
+    --ui-toolbar-btn-bg: rgba(0, 0, 0, 0.90);
+    --ui-toolbar-btn-hover: #1F1F1F;
+    --ui-toolbar-fg: #fff;
+
+    --ui-highlight: #F3F5F7;
     --ui-border: rgba(0, 0, 0, 0.10);
     --ui-border-soft: rgba(0, 0, 0, 0.08);
+    --ui-divider: rgba(0, 0, 0, 0.07);
+
+    --radius: 5px;
+
+    --blur: blur(8px);
+    --snackbar-blur: blur(10px);
+
+    --overlay: rgba(0, 0, 0, 0.20);
 }
 
 .notes-body {
     margin: 0;
-    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    background: #fff;
-    color: #111;
+    font-family: var(--font-mono);
+    background: var(--ui-bg);
+    color: var(--ui-text);
     overflow: hidden;
 }
 
@@ -29,133 +44,34 @@
     overflow: hidden;
 }
 
-/* ===== Sidebar ===== */
-
-.sidebar {
-    width: var(--sidebar-w);
-    flex: 0 0 var(--sidebar-w);
-    background: white;
-    border-right: 1px solid var(--ui-border-soft);
-    overflow: hidden;
-    transition: width 220ms ease, flex-basis 220ms ease;
-    z-index: 30;
-}
-
-.sidebar-inner {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    transition: opacity 160ms ease;
-}
-
-.notes-app.sidebar-collapsed .sidebar {
-    width: 0;
-    flex-basis: 0;
-    border-right: 0;
-}
-
-.notes-app.sidebar-collapsed .sidebar-inner {
-    opacity: 0;
-    pointer-events: none;
-}
-
-.sidebar-top {
-    height: var(--topbar-h);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    padding: 10px 14px;
-    box-sizing: border-box;
-}
-
-
-.sidebar-list {
-    padding: 6px 10px 14px;
-    overflow: auto;
-}
-
-.note-item {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 4px;
-    padding: 10px 12px;
-    cursor: pointer;
-    user-select: none;
-    border-radius: 5px;
-    position: relative;
-}
-
-/* линия-разделитель под заметкой */
-.note-item::after {
-    content: "";
-    position: absolute;
-    left: 12px;
-    right: 12px;
-    bottom: 0;
-    height: 1px;
-    background: rgba(0, 0, 0, 0.07);
-}
-
-/* у последней заметки линии нет */
-.sidebar-list .note-item:last-child::after {
-    display: none;
-}
-
-.note-item:hover {
-    background: var(--ui-highlight);
-}
-
-.note-item.active {
-    background: var(--ui-highlight);
-}
-
-.note-item-title {
-    font-weight: 700;
-    font-size: 13px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.note-item-sub {
-    font-size: 11px;
-    opacity: 0.6;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* ===== Buttons ===== */
-
-.icon-btn {
+.icon-btn,
+.trash-btn {
     width: 40px;
     height: 40px;
-    border-radius: 5px;
+    border-radius: var(--radius);
     border: none;
     background: rgba(255, 255, 255, 0.75);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     cursor: pointer;
-    text-decoration: none;
-    color: inherit;
     user-select: none;
     padding: 0;
     font: inherit;
 }
 
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: inherit;
+}
+
 .icon-btn:hover {
-    background: #fff;
+    background: var(--ui-bg);
 }
 
 .trash-btn {
     width: 44px;
     height: 44px;
-    border-radius: 5px;
-    border: none;
-    background: rgba(255, 255, 255, 0.75);
-    cursor: pointer;
 }
 
 .trash-btn:disabled {
@@ -163,7 +79,11 @@
     cursor: not-allowed;
 }
 
-/* ===== Editor pane (right column scroll) ===== */
+.ico {
+    width: 20px;
+    height: 20px;
+    display: block;
+}
 
 .editor-pane {
     flex: 1;
@@ -176,7 +96,6 @@
     overflow-anchor: none;
 }
 
-/* Topbar sticks inside right column scroll */
 .editor-topbar {
     height: var(--topbar-h);
     flex: 0 0 var(--topbar-h);
@@ -185,7 +104,7 @@
     justify-content: space-between;
     padding: 10px 14px;
     background: rgba(255, 255, 255, 0.92);
-    backdrop-filter: blur(8px);
+    backdrop-filter: var(--blur);
     border-bottom: 0;
     position: sticky;
     top: 0;
@@ -220,7 +139,7 @@
     position: sticky;
     top: var(--topbar-h);
     z-index: 15;
-    background: #fff;
+    background: var(--ui-bg);
 
     width: 100%;
     max-width: 100%;
@@ -229,7 +148,7 @@
 
     border: 0;
     outline: none;
-    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-family: var(--font-mono);
     font-size: 44px;
     font-weight: 800;
     letter-spacing: -0.02em;
@@ -254,23 +173,16 @@
     width: 100%;
 }
 
-/* CKEditor grows down (no internal scroll) */
 .ck.ck-editor,
-.ck.ck-editor__main {
-    width: 100%;
+.ck.ck-editor__main,
+.ck.ck-editor__editable_inline {
     height: auto !important;
     overflow: visible !important;
-    display: block;
-}
-
-.ck.ck-editor {
     display: block;
 }
 
 .ck.ck-editor__editable_inline {
-    height: auto !important;
     min-height: 260px !important;
-    overflow: visible !important;
 
     border: 0 !important;
     box-shadow: none !important;
@@ -296,221 +208,7 @@
     margin: 0 0 10px;
 }
 
-/* ===== CK toolbar look (your colors) ===== */
-
-.ck.ck-toolbar {
-    background: var(--ui-toolbar-bg) !important;
-    border-radius: 5px !important;
-    color: white;
-    border: 1px solid var(--ui-border) !important;
-}
-
-/* buttons */
-.ck.ck-toolbar .ck-button,
-.ck.ck-toolbar .ck-dropdown__button,
-.ck.ck-toolbar .ck-splitbutton__action,
-.ck.ck-toolbar .ck-splitbutton__arrow {
-    border-radius: 5px !important;
-    background: rgb(0, 0, 0, 0.9) !important;
-}
-
-/* hover buttons in toolbar */
-.ck.ck-toolbar .ck-button:hover,
-.ck.ck-toolbar .ck-dropdown__button:hover,
-.ck.ck-toolbar .ck-splitbutton__action:hover,
-.ck.ck-toolbar .ck-splitbutton__arrow:hover {
-    background: #1F1F1F !important;
-}
-
-/* active button in toolbar (gray, not blue) */
-.ck.ck-toolbar .ck-button.ck-on,
-.ck.ck-toolbar .ck-dropdown__button.ck-on,
-.ck.ck-toolbar .ck-splitbutton__action.ck-on,
-.ck.ck-toolbar .ck-splitbutton__arrow.ck-on {
-    background: #1F1F1F !important;
-}
-
-/* remove blue focus ring */
-.ck.ck-toolbar .ck-button:focus,
-.ck.ck-toolbar .ck-button:focus-visible,
-.ck.ck-toolbar .ck-dropdown__button:focus,
-.ck.ck-toolbar .ck-dropdown__button:focus-visible {
-    outline: none !important;
-    box-shadow: none !important;
-}
-
-/* ===== Mobile sidebar backdrop ===== */
-
-.sidebar-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.20);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 220ms ease;
-    z-index: 20;
-}
-
-.sidebar-backdrop[hidden] {
-    display: none !important;
-}
-
-/* ===== Floating toolbar ===== */
-
-.ck-floating-toolbar {
-    position: fixed !important;
-    bottom: var(--toolbar-gap);
-    z-index: 1000;
-
-    pointer-events: none;
-
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(6px);
-    transition: opacity 160ms ease, transform 160ms ease, visibility 160ms ease;
-}
-
-.ck-floating-toolbar.is-visible {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
-
-.ck-floating-toolbar-inner {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    pointer-events: none;
-}
-
-.ck-floating-toolbar .ck.ck-toolbar {
-    pointer-events: auto;
-    white-space: nowrap;
-    overflow: visible !important;
-}
-
-.ck-floating-toolbar .ck-toolbar__items {
-    flex-wrap: nowrap !important;
-}
-
-/* dropdown panels */
-.ck-floating-toolbar .ck-dropdown__panel {
-    max-height: min(60vh, 420px);
-    overflow: auto;
-    border-radius: 5px !important;
-    border: 1px solid var(--ui-border) !important;
-}
-
-/* CK panel surface */
-.ck.ck-dropdown__panel,
-.ck.ck-dropdown__panel .ck-list {
-    border-radius: 5px !important;
-    background: rgb(0, 0, 0, 0.9) !important;
-}
-
-/* ===== Heading dropdown (H button + narrow menu) ===== */
-
-.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-dropdown__button {
-    min-width: 20px !important;
-}
-
-.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-dropdown__button .ck-button__label {
-    display: none !important;
-}
-
-.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-dropdown__button::before {
-    content: "H";
-    font-weight: 800;
-    line-height: 1;
-}
-
-.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-dropdown__button .ck-dropdown__arrow {
-    margin-left: 5px !important;
-}
-
-/* narrow panel by content */
-.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-dropdown__panel {
-    width: max-content !important;
-    min-width: 0 !important;
-}
-
-.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-list {
-    width: max-content !important;
-    min-width: 0 !important;
-}
-
-/* uniform typography */
-.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-list__item .ck-button__label,
-.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-list__item .ck-heading_heading1,
-.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-list__item .ck-heading_heading2,
-.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-list__item .ck-heading_heading3,
-.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-list__item .ck-heading_paragraph {
-    font-size: 15px !important;
-    font-weight: 600 !important;
-    line-height: 1.2 !important;
-    margin: 0 !important;
-}
-
-/* make list items tight but clickable */
-.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-list__item .ck-button {
-    padding: 8px 10px !important;
-}
-
-/* active item gray (not blue) */
-.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-button.ck-on,
-.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-list__item .ck-button.ck-on {
-    background: rgb(0, 0, 0, 0.9) !important;
-    color: white !important;
-    border: none !important;
-}
-
-/* hover item */
-.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-list__item .ck-button:hover {
-    background: #1F1F1F !important;
-}
-
-.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-button:focus,
-.ck.ck-toolbar .ck-dropdown.ck-heading-dropdown .ck-button:focus-visible {
-    outline: none !important;
-    box-shadow: none !important;
-}
-
-/* ===== Responsive ===== */
-
 @media (max-width: 860px) {
-    .sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        width: var(--sidebar-w);
-        flex: none;
-        transform: translateX(-100%);
-        transition: transform 220ms ease;
-        border-right: 1px solid var(--ui-border-soft);
-    }
-
-    .notes-app.sidebar-collapsed .sidebar {
-        width: var(--sidebar-w);
-        flex-basis: auto;
-        border-right: 1px solid var(--ui-border-soft);
-    }
-
-    .notes-app.sidebar-collapsed .sidebar-inner {
-        opacity: 1;
-        pointer-events: auto;
-    }
-
-    .notes-app.sidebar-shown .sidebar {
-        transform: translateX(0);
-    }
-
-    .notes-app.sidebar-shown ~ .sidebar-backdrop {
-        display: block !important;
-        opacity: 1;
-        pointer-events: auto;
-    }
-
     .editor-wrap {
         padding: 14px;
     }
@@ -527,75 +225,5 @@
 
     .note-title {
         font-size: 28px;
-    }
-}
-
-/* ===== Toolbar: force white text/icons ===== */
-.ck.ck-toolbar,
-.ck.ck-toolbar * {
-    color: #fff !important;
-}
-
-.ck.ck-toolbar .ck-icon {
-    color: #fff !important;
-}
-
-/* svg icons inherit currentColor */
-.ck.ck-toolbar .ck-icon svg,
-.ck.ck-toolbar .ck-icon svg * {
-    fill: currentColor !important;
-    stroke: currentColor !important;
-}
-
-.ico {
-    width: 20px;
-    height: 20px;
-    display: block;
-}
-
-/* ===== Snackbar (Notion-like) ===== */
-
-.snackbar {
-    position: fixed;
-    bottom: 22px;
-    opacity: 0;
-    visibility: hidden;
-    left: 0;              /* будет задаваться JS */
-    right: auto;
-    transform: translate(-50%, 10px); /* центрируем относительно left, который JS выставит */
-    max-width: min(560px, calc(100vw - 24px)); /* чтобы не раздувался */
-
-    pointer-events: none;
-
-    background: rgba(0, 0, 0, 0.90);
-    color: white;
-
-    padding: 14px 22px;
-    border-radius: 5px;
-
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 1.2;
-    letter-spacing: -0.01em;
-
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-
-    transition: opacity 180ms ease, transform 180ms ease, visibility 180ms ease;
-    z-index: 2000;
-}
-
-.snackbar.is-visible {
-    opacity: 1;
-    visibility: visible;
-    transform: translate(-50%, 0);
-}
-
-/* чуть ниже/безопаснее на мобилках */
-@media (max-width: 860px) {
-    .snackbar {
-        bottom: 16px;
-        max-width: calc(100vw - 24px);
-        text-align: center;
     }
 }
