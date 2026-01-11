@@ -1,5 +1,9 @@
 from drf_spectacular.utils import extend_schema
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+    TokenVerifyView,
+)
 
 
 @extend_schema(tags=["auth"])
@@ -15,3 +19,6 @@ class JWTRefreshView(TokenRefreshView):
 @extend_schema(tags=["auth"])
 class JWTVerifyView(TokenVerifyView):
     pass
+
+
+__all__ = ()

@@ -9,8 +9,8 @@ from django.contrib.auth.views import LogoutView
 from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views import View
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import TemplateView
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
@@ -48,13 +48,25 @@ class LoginPageView(View):
         password = request.POST.get("password") or ""
 
         if not username or not password:
-            return render(request, self.template_name, {"error": "Please fill username and password."})
+            return render(
+                request,
+                self.template_name,
+                {"error": "Please fill username and password."},
+            )
 
         user = authenticate(request, username=username, password=password)
         if not user:
-            return render(request, self.template_name, {"error": "Invalid username or password."})
+            return render(
+                request,
+                self.template_name,
+                {"error": "Invalid username or password."},
+            )
         if not user.is_active:
-            return render(request, self.template_name, {"error": "Account is not active. Confirm your email first."})
+            return render(
+                request,
+                self.template_name,
+                {"error": "Account is not active. Confirm your email first."},
+            )
 
         login(request, user)
         return redirect(request.GET.get("next") or "/notes/")
@@ -82,7 +94,11 @@ class SignupPageView(View):
 
         serializer = authorization.serializers.RegisterSerializer(data=payload)
         if not serializer.is_valid():
-            return render(request, self.template_name, {"error": _format_serializer_errors(serializer.errors)})
+            return render(
+                request,
+                self.template_name,
+                {"error": _format_serializer_errors(serializer.errors)},
+            )
 
         user = serializer.save()
 
@@ -109,16 +125,26 @@ class ConfirmEmailPageView(View):
     template_name = "auth/confirm_email.html"
 
     def get(self, request):
-        email = (request.GET.get("email") or request.session.get("pending_email") or "").strip().lower()
+        email = (
+            (request.GET.get("email") or request.session.get("pending_email") or "")
+            .strip()
+            .lower()
+        )
         if not email:
             return redirect("/signup/")
         return render(request, self.template_name, {"email": email})
 
     def post(self, request):
-        email = (request.POST.get("email") or request.session.get("pending_email") or "").strip().lower()
+        email = (
+            (request.POST.get("email") or request.session.get("pending_email") or "")
+            .strip()
+            .lower()
+        )
         code = (request.POST.get("code") or "").strip()
 
-        serializer = authorization.serializers.EmailConfirmSerializer(data={"email": email, "code": code})
+        serializer = authorization.serializers.EmailConfirmSerializer(
+            data={"email": email, "code": code},
+        )
         if not serializer.is_valid():
             return render(
                 request,
@@ -129,7 +155,11 @@ class ConfirmEmailPageView(View):
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            return render(request, self.template_name, {"email": email, "error": "User with this email not found."})
+            return render(
+                request,
+                self.template_name,
+                {"email": email, "error": "User with this email not found."},
+            )
 
         now = timezone.now()
         rec = (
@@ -145,7 +175,11 @@ class ConfirmEmailPageView(View):
         )
 
         if not rec:
-            return render(request, self.template_name, {"email": email, "error": "Invalid or expired code."})
+            return render(
+                request,
+                self.template_name,
+                {"email": email, "error": "Invalid or expired code."},
+            )
 
         rec.is_used = True
         rec.save(update_fields=["is_used"])
@@ -271,7 +305,10 @@ class ConfirmEmailView(GenericAPIView):
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            return Response({"detail": "User with this email not found."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "User with this email not found."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         now = timezone.now()
         rec = (
@@ -287,7 +324,10 @@ class ConfirmEmailView(GenericAPIView):
         )
 
         if not rec:
-            return Response({"detail": "Invalid or expired code."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "Invalid or expired code."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         rec.is_used = True
         rec.save(update_fields=["is_used"])
@@ -313,10 +353,16 @@ class ResendEmailCodeView(GenericAPIView):
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            return Response({"detail": "User with this email not found."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "User with this email not found."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         if user.is_active:
-            return Response({"detail": "Email already confirmed."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "Email already confirmed."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         code = _generate_6_digit_code()
         now = timezone.now()
@@ -363,3 +409,6 @@ class LogoutAPIView(GenericAPIView):
     def post(self, request):
         logout(request._request)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+__all__ = ()

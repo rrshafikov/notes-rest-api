@@ -7,3 +7,6 @@ app_name = "notes"
 urlpatterns = [
     path("", notes.views.NotesPageView.as_view(), name="index"),
 ]
+
+
+__all__ = ()

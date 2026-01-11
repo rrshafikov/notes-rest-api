@@ -22,3 +22,6 @@ class EmailVerificationCode(models.Model):
 
     def is_expired(self) -> bool:
         return timezone.now() >= self.expires_at
+
+
+__all__ = ()

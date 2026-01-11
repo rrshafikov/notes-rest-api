@@ -23,3 +23,6 @@ class Note(models.Model):
 
     def __str__(self) -> str:
         return f"{self.title} ({self.owner_id})"
+
+
+__all__ = ()
