@@ -2,37 +2,60 @@
 {% block title %}CONFIRM EMAIL{% endblock %}
 
 {% block content %}
-<div class="auth-page">
-  <div class="auth-card card">
-    <div class="auth-header">
-      <h1 class="auth-title">Confirm your email</h1>
-      <p class="auth-subtitle">Enter the 6-digit code we sent to {{ email }}</p>
+    <div class="auth-page">
+        <div class="auth-card card">
+            <div class="auth-header">
+                <h1 class="auth-title">Confirm your email</h1>
+                <p class="auth-subtitle">Enter the 6-digit code we sent to {{ email }}</p>
+            </div>
+
+            <form
+                class="auth-form"
+                id="confirm-email-form"
+                method="post"
+                action="{% url 'authorization:confirm_email' %}"
+                novalidate
+            >
+                {% csrf_token %}
+                <input type="hidden" name="email" value="{{ email }}" />
+
+                <div
+                    class="auth-errors"
+                    id="confirm-email-errors"
+                    {% if %}
+                    style="display:block;"
+                    {% else %}
+                    style="display:none;"
+                    {% endif %}
+                >
+                    {{ error }}
+                </div>
+
+                <label class="auth-label">
+                    <span class="auth-label-text">Confirmation code</span>
+                    <input
+                        class="auth-input"
+                        name="code"
+                        inputmode="numeric"
+                        autocomplete="one-time-code"
+                        placeholder="123456"
+                        required
+                    />
+                </label>
+
+                <button type="submit" class="auth-submit-btn">Confirm</button>
+            </form>
+
+            <div class="auth-links">
+                <div class="auth-link-row">
+                    <span>Already confirmed?</span>
+                    <a href="/login/">Log in</a>
+                </div>
+                <div class="auth-link-row">
+                    <span>Wrong email?</span>
+                    <a href="/signup/">Sign up again</a>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <form class="auth-form" id="confirm-email-form" method="post" action="{% url 'authorization:confirm_email' %}" novalidate>
-      {% csrf_token %}
-      <input type="hidden" name="email" value="{{ email }}"/>
-
-      <div class="auth-errors" id="confirm-email-errors" {% if error %}style="display:block;"{% else %}style="display:none;"{% endif %}>{{ error }}</div>
-
-      <label class="auth-label">
-        <span class="auth-label-text">Confirmation code</span>
-        <input class="auth-input" name="code" inputmode="numeric" autocomplete="one-time-code" placeholder="123456" required />
-      </label>
-
-      <button type="submit" class="auth-submit-btn">Confirm</button>
-    </form>
-
-    <div class="auth-links">
-      <div class="auth-link-row">
-        <span>Already confirmed?</span>
-        <a href="/login/">Log in</a>
-      </div>
-      <div class="auth-link-row">
-        <span>Wrong email?</span>
-        <a href="/signup/">Sign up again</a>
-      </div>
-    </div>
-  </div>
-</div>
 {% endblock %}

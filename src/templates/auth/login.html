@@ -2,43 +2,72 @@
 {% block title %}LOG IN{% endblock %}
 
 {% block content %}
-<div class="auth-page">
-  <div class="auth-card card">
-    <div class="auth-header">
-      <h1 class="auth-title">Welcome back!</h1>
-      <p class="auth-subtitle">Log in to your account</p>
+    <div class="auth-page">
+        <div class="auth-card card">
+            <div class="auth-header">
+                <h1 class="auth-title">Welcome back!</h1>
+                <p class="auth-subtitle">Log in to your account</p>
+            </div>
+
+            <form
+                class="auth-form"
+                id="login-form"
+                method="post"
+                action="{% url 'authorization:login' %}"
+                novalidate
+            >
+                {% csrf_token %}
+
+                <div
+                    class="auth-errors"
+                    id="login-errors"
+                    {% if error or info %}
+                        style="display:block;"
+                    {% else %}
+                        style="display:none;"
+                    {% endif %}
+                >
+                    {% if error %}
+                        {{ error }}
+                    {% elif info %}
+                        {{ info }}
+                    {% endif %}
+                </div>
+
+                <label class="auth-label">
+                    <span class="auth-label-text">Username</span>
+                    <input
+                        class="auth-input"
+                        name="username"
+                        autocomplete="username"
+                        required
+                    />
+                </label>
+
+                <label class="auth-label">
+                    <span class="auth-label-text">Password</span>
+                    <input
+                        class="auth-input"
+                        type="password"
+                        name="password"
+                        autocomplete="current-password"
+                        required
+                    />
+                </label>
+
+                <button type="submit" class="auth-submit-btn">Log in</button>
+            </form>
+
+            <div class="auth-links">
+                <div class="auth-link-row">
+                    <span>Forgot password?</span>
+                    <a href="/reset-password/">Reset password</a>
+                </div>
+                <div class="auth-link-row">
+                    <span>No account?</span>
+                    <a href="/signup/">Sign up</a>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <form class="auth-form" id="login-form" method="post" action="{% url 'authorization:login' %}" novalidate>
-      {% csrf_token %}
-
-      <div class="auth-errors" id="login-errors" {% if error or info %}style="display:block;"{% else %}style="display:none;"{% endif %}>
-        {% if error %}{{ error }}{% elif info %}{{ info }}{% endif %}
-      </div>
-
-      <label class="auth-label">
-        <span class="auth-label-text">Username</span>
-        <input class="auth-input" name="username" autocomplete="username" required />
-      </label>
-
-      <label class="auth-label">
-        <span class="auth-label-text">Password</span>
-        <input class="auth-input" type="password" name="password" autocomplete="current-password" required />
-      </label>
-
-      <button type="submit" class="auth-submit-btn">Log in</button>
-    </form>
-
-    <div class="auth-links">
-      <div class="auth-link-row">
-        <span>Forgot password?</span>
-        <a href="/reset-password/">Reset password</a>
-      </div>
-      <div class="auth-link-row">
-        <span>No account?</span>
-        <a href="/signup/">Sign up</a>
-      </div>
-    </div>
-  </div>
-</div>
 {% endblock %}

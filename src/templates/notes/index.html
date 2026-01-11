@@ -11,6 +11,9 @@
 
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <link rel="stylesheet" href="{% static 'css/notes.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/toolbar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/snackbar.css' %}">
 
     <script src="https://cdn.ckeditor.com/ckeditor5/40.2.0/super-build/ckeditor.js"></script>
 </head>
@@ -59,6 +62,9 @@
 
     <div id="snackbar" class="snackbar" role="status" aria-live="polite" aria-atomic="true"></div>
 
+    <script src="{% static 'js/snackbar.js' %}"></script>
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    <script src="{% static 'js/toolbar.js' %}"></script>
     <script src="{% static 'js/notes.js' %}"></script>
 </body>
 </html>

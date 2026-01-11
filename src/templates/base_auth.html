@@ -1,29 +1,35 @@
 {% load static %}
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>{% block title %}Auth{% endblock %}</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>{% block title %}Auth{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="{% static 'css/base.css' %}">
-  <link rel="stylesheet" href="{% static 'css/auth.css' %}">
-  {% block extra_css %}{% endblock %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+    <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+    {% block extra_css %}{% endblock %}
 </head>
 <body class="auth-body page-hidden">
-  <main class="auth-shell">
-    {% block content %}{% endblock %}
-  </main>
+    <main class="auth-shell">
+        {% block content %}{% endblock %}
+    </main>
 
-  <script>
-    window.addEventListener("load", () => {
-      document.body.classList.remove("page-hidden");
-      document.body.classList.add("page-visible");
-    });
-  </script>
-  {% block extra_js %}{% endblock %}
+    <footer class="auth-footer">
+        <div class="auth-footer-title">NOTES REST API</div>
+        <div class="auth-footer-sub">Shafikov, Belov, Gorin</div>
+    </footer>
+
+    <script>
+        window.addEventListener("load", () => {
+            document.body.classList.remove("page-hidden");
+            document.body.classList.add("page-visible");
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>
