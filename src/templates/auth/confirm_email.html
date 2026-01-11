@@ -6,11 +6,14 @@
   <div class="auth-card card">
     <div class="auth-header">
       <h1 class="auth-title">Confirm your email</h1>
-      <p class="auth-subtitle">Enter the 6-digit code we sent to your email</p>
+      <p class="auth-subtitle">Enter the 6-digit code we sent to {{ email }}</p>
     </div>
 
-    <form class="auth-form" id="confirm-email-form" novalidate>
-      <div class="auth-errors" id="confirm-email-errors" style="display:none;"></div>
+    <form class="auth-form" id="confirm-email-form" method="post" action="{% url 'authorization:confirm_email' %}" novalidate>
+      {% csrf_token %}
+      <input type="hidden" name="email" value="{{ email }}"/>
+
+      <div class="auth-errors" id="confirm-email-errors" {% if error %}style="display:block;"{% else %}style="display:none;"{% endif %}>{{ error }}</div>
 
       <label class="auth-label">
         <span class="auth-label-text">Confirmation code</span>
@@ -22,12 +25,12 @@
 
     <div class="auth-links">
       <div class="auth-link-row">
-        <span>Didn’t get a code?</span>
-        <a href="#" id="resend-email-code">Resend code</a>
+        <span>Already confirmed?</span>
+        <a href="/login/">Log in</a>
       </div>
       <div class="auth-link-row">
-        <span>Back to</span>
-        <a href="/login/">Log in</a>
+        <span>Wrong email?</span>
+        <a href="/signup/">Sign up again</a>
       </div>
     </div>
   </div>

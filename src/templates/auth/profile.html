@@ -1,0 +1,70 @@
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PROFILE</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+  <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+</head>
+
+<body class="auth-body">
+  <a class="profile-back" href="/notes/" aria-label="Back to notes" title="Back to notes">
+    <img class="ico" src="{% static 'img/back.png' %}" alt="Back">
+  </a>
+
+  <div class="auth-shell">
+    <div class="auth-page">
+      <div class="auth-card card" role="region" aria-label="Profile">
+        <div class="profile-top">
+          <div class="profile-avatar" aria-hidden="true">{{ request.user.username|slice:":1"|upper }}</div>
+          <div class="profile-ident">
+            <div class="profile-name" title="{{ request.user.username }}">{{ request.user.username }}</div>
+            <div class="profile-email" title="{{ request.user.email }}">{{ request.user.email }}</div>
+          </div>
+        </div>
+
+        <div class="profile-stats" aria-label="Stats">
+          <div class="profile-stat">
+            <div class="profile-stat-v">{{ note_count }}</div>
+            <div class="profile-stat-k">Notes</div>
+          </div>
+          <div class="profile-stat">
+            <div class="profile-stat-v">{{ pinned_count }}</div>
+            <div class="profile-stat-k">Pinned</div>
+          </div>
+        </div>
+
+        <div class="profile-meta" aria-label="Account details">
+          <div class="profile-row">
+            <div class="profile-k">Joined</div>
+            <div class="profile-v">{% if date_joined %}{{ date_joined|date:"d M Y" }}{% else %}—{% endif %}</div>
+          </div>
+          <div class="profile-row">
+            <div class="profile-k">Last login</div>
+            <div class="profile-v">{% if last_login %}{{ last_login|date:"d M Y, H:i" }}{% else %}—{% endif %}</div>
+          </div>
+        </div>
+
+        <div class="profile-actions" aria-label="Actions">
+          <button class="auth-submit-btn" id="btn-logout" type="button" style="margin-bottom: -10px;">Logout</button>
+          <button class="auth-submit-btn is-danger" id="btn-delete-account" type="button">Delete account</button>
+        </div>
+
+        <p class="profile-hint">Delete account permanently removes your user. This action cannot be undone.</p>
+
+        <div class="profile-toast" id="profile-toast" hidden></div>
+        <form id="csrf-form" style="display:none;">{% csrf_token %}</form>
+      </div>
+    </div>
+  </div>
+
+  <script src="{% static 'js/profile.js' %}"></script>
+</body>
+</html>

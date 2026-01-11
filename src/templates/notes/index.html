@@ -1,20 +1,64 @@
 {% load static %}
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>NOTES</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/base.css' %}">
-  <script src="{% static 'js/guard.js' %}"></script>
+    <meta charset="UTF-8" />
+    <title>NOTES</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/notes.css' %}">
+
+    <script src="https://cdn.ckeditor.com/ckeditor5/40.2.0/super-build/ckeditor.js"></script>
 </head>
-<body>
-  <div style="max-width:900px;margin:40px auto;padding:0 12px;">
-    <div class="card">
-      <h1 style="margin:0 0 10px;">Notes</h1>
-      <p style="margin:0;">Home page placeholder. Next step: greeting instruction note.</p>
+
+<body class="notes-body">
+    <div class="notes-app" id="app">
+        <aside class="sidebar" id="sidebar" aria-label="Sidebar">
+            <div class="sidebar-inner">
+                <div class="sidebar-top">
+                    <a class="icon-btn" href="{% url 'authorization:profile' %}" title="Profile" aria-label="Profile">
+                        <img class="ico" src="{% static 'img/profile.png' %}" alt="Profile">
+                    </a>
+
+                    <button class="icon-btn" id="btn-new" title="New note" aria-label="New note" type="button">
+                        <img class="ico" src="{% static 'img/add.png' %}" alt="New note">
+                    </button>
+                </div>
+
+                <div class="sidebar-list" id="notes-list"></div>
+            </div>
+        </aside>
+
+        <main class="editor-pane">
+            <header class="editor-topbar">
+                <div class="topbar-left">
+                    <button class="icon-btn" id="btn-sidebar" type="button" aria-label="Toggle sidebar" title="Toggle sidebar">
+                        <img class="ico" src="{% static 'img/sidebar.png' %}" alt="Toggle sidebar">
+                    </button>
+
+                    <div class="editor-status" id="save-indicator" aria-live="polite"></div>
+                </div>
+
+                <button class="trash-btn" id="btn-delete" title="Delete note" aria-label="Delete note" type="button" disabled>
+                    <img class="ico" src="{% static 'img/delete.png' %}" alt="Delete note">
+                </button>
+            </header>
+
+            <div class="editor-wrap">
+                <textarea id="note-title" class="note-title" placeholder="New note" rows="1" maxlength="70"></textarea>
+                <div id="editor" class="editor"></div>
+            </div>
+        </main>
     </div>
-  </div>
+
+    <div class="sidebar-backdrop" id="sidebar-backdrop" hidden></div>
+
+    <div id="snackbar" class="snackbar" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="{% static 'js/notes.js' %}"></script>
 </body>
 </html>

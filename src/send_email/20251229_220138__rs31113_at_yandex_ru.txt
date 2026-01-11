@@ -1,5 +1,0 @@
-TO: rs31113@yandex.ru
-SUBJECT: Confirm your email
-
-Your confirmation code: 547403
-
