@@ -20,6 +20,7 @@ INSTALLED_APPS = [
 
     "notes",
     "authorization",
+    "api",
 ]
 
 MIDDLEWARE = [
@@ -76,10 +77,10 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
@@ -99,7 +100,14 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "REST API for notes with JWT authentication",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
+    "TAGS": [
+        {"name": "auth", "description": "Authentication & users"},
+        {"name": "notes", "description": "Notes CRUD"},
+    ],
 }
 
-# Куда "отправляем" письма-заглушки (файлами)
+LOGIN_URL = "/login/"
+LOGIN_REDIRECT_URL = "/notes/"
+LOGOUT_REDIRECT_URL = "/login/"
+
 SEND_EMAIL_DIR = BASE_DIR / "send_email"

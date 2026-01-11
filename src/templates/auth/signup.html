@@ -9,8 +9,10 @@
       <p class="auth-subtitle">Sign up to start using notes</p>
     </div>
 
-    <form class="auth-form" id="signup-form" novalidate>
-      <div class="auth-errors" id="signup-errors" style="display:none;"></div>
+    <form class="auth-form" id="signup-form" method="post" action="{% url 'authorization:signup' %}" novalidate>
+      {% csrf_token %}
+
+      <div class="auth-errors" id="signup-errors" {% if error %}style="display:block;"{% else %}style="display:none;"{% endif %}>{{ error }}</div>
 
       <label class="auth-label">
         <span class="auth-label-text">Username</span>
@@ -18,8 +20,8 @@
       </label>
 
       <label class="auth-label">
-        <span class="auth-label-text">Email (optional)</span>
-        <input class="auth-input" type="email" name="email" autocomplete="email" />
+        <span class="auth-label-text">Email</span>
+        <input class="auth-input" type="email" name="email" autocomplete="email" required />
       </label>
 
       <label class="auth-label">
@@ -40,8 +42,7 @@
         <span>Already have an account?</span>
         <a href="/login/">Log in</a>
       </div>
-</div>
-
+    </div>
   </div>
 </div>
 {% endblock %}

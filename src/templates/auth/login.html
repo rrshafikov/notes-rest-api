@@ -9,8 +9,12 @@
       <p class="auth-subtitle">Log in to your account</p>
     </div>
 
-    <form class="auth-form" id="login-form" novalidate>
-      <div class="auth-errors" id="login-errors" style="display:none;"></div>
+    <form class="auth-form" id="login-form" method="post" action="{% url 'authorization:login' %}" novalidate>
+      {% csrf_token %}
+
+      <div class="auth-errors" id="login-errors" {% if error or info %}style="display:block;"{% else %}style="display:none;"{% endif %}>
+        {% if error %}{{ error }}{% elif info %}{{ info }}{% endif %}
+      </div>
 
       <label class="auth-label">
         <span class="auth-label-text">Username</span>
@@ -34,8 +38,7 @@
         <span>No account?</span>
         <a href="/signup/">Sign up</a>
       </div>
-</div>
-
+    </div>
   </div>
 </div>
 {% endblock %}

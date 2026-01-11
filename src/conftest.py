@@ -7,7 +7,6 @@ User = get_user_model()
 
 @pytest.fixture()
 def api_client():
-    # New client for every test
     return APIClient()
 
 
