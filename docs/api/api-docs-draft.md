@@ -1,15 +1,15 @@
 # API Documentation Draft (NRA-13)
 
-Project: Notes REST API
-Base URL: /api/
-Format: JSON
+Project: Notes REST API  
+Base URL: /api/  
+Format: JSON  
 Authentication: JWT Bearer token
 
 ---
 
 ## 1) Authentication overview
 
-JWT usage:
+JWT usage:  
 Client sends token in HTTP header:
 
     Authorization: Bearer <access_token>
@@ -130,7 +130,7 @@ Errors:
 
 **GET /users/me/**
 
-Returns current authenticated user.
+Returns current authenticated user.  
 Authentication required.
 
 Response 200:
