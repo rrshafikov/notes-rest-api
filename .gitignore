@@ -6,6 +6,7 @@ __pycache__/
 .venv/
 venv/
 .env
+/staticfiles/
 
 .pytest_cache/
 .coverage
@@ -18,5 +19,4 @@ src/send_email
 .vscode/
 .idea/
 
-# OS
 .DS_Store
