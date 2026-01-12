@@ -1,40 +1,38 @@
-# API Documentation Draft (NRA-13)
+# API Documentation (NRA-13)
 
 Project: Notes REST API  
 Base URL: /api/  
 Format: JSON  
-Authentication: JWT Bearer token
+Authentication: JWT Bearer token (or SessionAuth for web UI)
 
 ---
 
 ## 1) Authentication overview
 
-JWT usage:  
-Client sends token in HTTP header:
+JWT usage:
+Send token in header:
 
     Authorization: Bearer <access_token>
 
 Token types:
-- access token — short-lived, used for API requests
-- refresh token — used to obtain new access token
+- access - used for API requests
+- refresh - used to obtain new access token
+
+Important:
+- After registration user is created with `is_active=false`
+- Email confirmation is required before login/JWT
 
 ---
 
 ## 2) Endpoints
 
-### 2.1 Health
-
-**GET /health/**
-
-Checks that service is alive.
-
-Response 200:
-
-    { "status": "ok" }
+### 2.1 OpenAPI
+**GET /schema/** - OpenAPI schema  
+**GET /docs/** - Swagger UI
 
 ---
 
-### 2.2 Authentication
+### 2.2 Registration
 
 **POST /auth/register/**
 
@@ -45,7 +43,8 @@ Request:
     {
       "username": "ruslan",
       "email": "ruslan@example.com",
-      "password": "StrongPassword123"
+      "password": "StrongPassword123",
+      "password_confirm": "StrongPassword123"
     }
 
 Response 201:
@@ -53,17 +52,59 @@ Response 201:
     {
       "id": 1,
       "username": "ruslan",
-      "email": "ruslan@example.com"
+      "email": "ruslan@example.com",
+      "detail": "User created. Confirmation code sent to email (stub)."
     }
 
-Errors:
-- 400 Validation error
+Notes:
+- Confirmation code is written to `src/send_email/*.txt` (stub).
+- User is inactive until confirmation.
 
 ---
 
-**POST /auth/jwt/create/**
+### 2.3 Email confirmation
 
-Obtain JWT access and refresh tokens.
+**POST /auth/email/confirm/**
+
+Request:
+
+    {
+      "email": "ruslan@example.com",
+      "code": "123456"
+    }
+
+Response 200:
+
+    { "detail": "Email confirmed." }
+
+Errors:
+- 400 invalid/expired code or user not found
+
+---
+
+**POST /auth/email/resend/**
+
+Resends confirmation code (stub).
+
+Request:
+
+    {
+      "email": "ruslan@example.com",
+      "code": "000000"
+    }
+
+Note:
+- `code` is required by serializer format (6 digits), although it is not used by the server logic.
+
+Response 200:
+
+    { "detail": "Code resent." }
+
+---
+
+### 2.4 JWT
+
+**POST /auth/jwt/create/**
 
 Request:
 
@@ -80,75 +121,64 @@ Response 200:
     }
 
 Errors:
-- 401 Invalid credentials
+- 401 Invalid credentials / inactive user
 
 ---
 
 **POST /auth/jwt/refresh/**
 
-Refresh access token.
-
 Request:
 
-    {
-      "refresh": "<jwt_refresh>"
-    }
+    { "refresh": "<jwt_refresh>" }
 
 Response 200:
 
-    {
-      "access": "<new_jwt_access>"
-    }
-
-Errors:
-- 401 Invalid or expired refresh token
+    { "access": "<new_jwt_access>" }
 
 ---
 
 **POST /auth/jwt/verify/**
 
-Verify access token.
-
 Request:
 
-    {
-      "token": "<jwt_access>"
-    }
+    { "token": "<jwt_access>" }
 
 Response 200:
 
-    {
-      "detail": "Token is valid"
-    }
-
-Errors:
-- 401 Invalid token
+    { "detail": "Token is valid" }
 
 ---
 
-### 2.3 User
+### 2.5 Profile
 
-**GET /users/me/**
-
-Returns current authenticated user.  
-Authentication required.
+**GET /auth/profile/** (auth required)
 
 Response 200:
 
     {
       "id": 1,
       "username": "ruslan",
-      "email": "ruslan@example.com"
+      "email": "ruslan@example.com",
+      "is_active": true
     }
 
-Errors:
-- 401 Unauthorized
+**PATCH /auth/profile/** (auth required)
+
+Request example:
+
+    { "username": "new_name" }
+
+**PATCH /auth/profile/** password example:
+
+    { "password": "NewStrongPass123" }
+
+**DELETE /auth/profile/** deletes current user and logs out.
 
 ---
 
-### 2.4 Notes (CRUD)
+### 2.6 Notes (CRUD)
 
-**Note object structure**
+**Note object**
 
     {
       "id": 1,
@@ -161,19 +191,16 @@ Errors:
 
 Rules:
 - Authentication required for all notes endpoints
-- User can access only their own notes (owner-based access)
+- User can access only their own notes
 
 ---
 
 **GET /notes/**
 
-List notes of current user.
-
 Query parameters:
-- page (integer)
-- page_size (integer, optional)
-- ordering (created_at, -created_at, title, -title)
-- search (searches in title and content)
+- page, page_size
+- ordering: created_at, updated_at, title, is_pinned (with optional `-`)
+- search: searches in title and content
 
 Response 200:
 
@@ -181,26 +208,12 @@ Response 200:
       "count": 1,
       "next": null,
       "previous": null,
-      "results": [
-        {
-          "id": 1,
-          "title": "My note",
-          "content": "text...",
-          "is_pinned": false,
-          "created_at": "2025-12-22T10:00:00Z",
-          "updated_at": "2025-12-22T10:10:00Z"
-        }
-      ]
+      "results": [ ... ]
     }
-
-Errors:
-- 401 Unauthorized
 
 ---
 
 **POST /notes/**
-
-Create a new note.
 
 Request:
 
@@ -210,115 +223,27 @@ Request:
       "is_pinned": false
     }
 
-Response 201:
-
-    {
-      "id": 2,
-      "title": "Shopping list",
-      "content": "Milk, eggs",
-      "is_pinned": false,
-      "created_at": "2025-12-22T10:00:00Z",
-      "updated_at": "2025-12-22T10:00:00Z"
-    }
-
-Errors:
-- 400 Validation error
-- 401 Unauthorized
+Response 201: note object.
 
 ---
 
-**GET /notes/{id}/**
-
-Retrieve note by id (only owner).
-
-Response 200:
-- Note object
-
-Errors:
-- 401 Unauthorized
-- 404 Not found
+**GET /notes/{id}/** - retrieve (only owner)  
+**PATCH /notes/{id}/** - partial update  
+**PUT /notes/{id}/** - full update  
+**DELETE /notes/{id}/** - 204
 
 ---
 
-**PATCH /notes/{id}/**
-
-Partial update of note.
-
-Request example:
-
-    {
-      "title": "Updated title"
-    }
-
-Response 200:
-- Updated note object
-
-Errors:
-- 400 Validation error
-- 401 Unauthorized
-- 404 Not found
-
----
-
-**PUT /notes/{id}/**
-
-Full update of note.
-
-Request:
-
-    {
-      "title": "Shopping list",
-      "content": "Milk, eggs, bread",
-      "is_pinned": true
-    }
-
-Response 200:
-- Updated note object
-
-Errors:
-- 400 Validation error
-- 401 Unauthorized
-- 404 Not found
-
----
-
-**DELETE /notes/{id}/**
-
-Delete note.
-
-Response:
-- 204 No Content
-
-Errors:
-- 401 Unauthorized
-- 404 Not found
-
----
-
-## 3) Error format (draft)
+## 3) Error format
 
 Validation error (400):
 
-    {
-      "title": ["This field is required."]
-    }
+    { "title": ["This field is required."] }
 
 Unauthorized (401):
 
-    {
-      "detail": "Authentication credentials were not provided."
-    }
+    { "detail": "Authentication credentials were not provided." }
 
 Not found (404):
 
-    {
-      "detail": "Not found."
-    }
-
----
-
-## 4) Next steps
-
-- Implement backend with Django REST Framework (NRA-14 to NRA-21)
-- Add Swagger / OpenAPI documentation (NRA-21)
-- Add automated tests and CI pipeline (NRA-22 to NRA-31)
+    { "detail": "Not found." }
